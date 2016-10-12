@@ -14,11 +14,11 @@ public class ManyTimePadBreaker {
 			e.printStackTrace();
 			return "";
 		}
-		char[] key = findKey(sampleTexts);
-		return new String(sampleTexts.get(target).decrypt(new String(key)));
+		byte[] key = findKey(sampleTexts);
+		return new String(sampleTexts.get(target).decrypt(key));
 	}
 	
-	private char[] findKey(ArrayList<Message> sampleTexts) {
+	private byte[] findKey(ArrayList<Message> sampleTexts) {
 		int len = 0;
 		for(int i = 0; i < sampleTexts.size(); i++) {
 			if(sampleTexts.get(i).size() > len) {
@@ -34,7 +34,7 @@ public class ManyTimePadBreaker {
 				Message.guess(m1, m2, Message.xor(m1, m2), key, " ");
 			}
 		}
-		char[] ret = new char[len];
+		byte[] ret = new byte[len];
 		for(int i = 0; i < key.length; i++) {
 			int dex = 0;
 			for(int j = 0; j < key[0].length; j++) {
@@ -42,7 +42,7 @@ public class ManyTimePadBreaker {
 					dex = j;
 				}
 			}
-			ret[i] = (char)dex;
+			ret[i] = (byte)dex;
 		}
 		return ret;
 	}
@@ -72,12 +72,15 @@ public class ManyTimePadBreaker {
 	 * @param hex
 	 * @return
 	 */
-	private String readHex(String hex) {
-		StringBuilder cyphertext = new StringBuilder();
+	private byte[] readHex(String hex) {
+	    if(hex.length()%2 != 0) {
+	        throw new IllegalArgumentException();
+	    }
+	    byte[] cypherText = new byte[hex.length()/2];
 		for(int i = 0; i < hex.length()-1; i += 2) {
-			cyphertext.append((char)Integer.parseInt(hex.substring(i,i+2), 16));
+			cypherText[i/2] = (byte)Integer.parseInt(hex.substring(i,i+2), 16);
 		}
-		return cyphertext.toString();
+		return cypherText;
 	}
 
 	public static void main(String[] args) {
