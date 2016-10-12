@@ -3,11 +3,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ManyTimePadBreaker {
 	
 	public String start(String filename, int target) {
-		ArrayList<Message> sampleTexts;
+		List<Message> sampleTexts;
 		try {
 			sampleTexts = readFile(filename);
 		} catch (IOException e) {
@@ -18,7 +19,7 @@ public class ManyTimePadBreaker {
 		return new String(sampleTexts.get(target).decrypt(key));
 	}
 	
-	private byte[] findKey(ArrayList<Message> sampleTexts) {
+	private byte[] findKey(List<Message> sampleTexts) {
 		int len = 0;
 		for(int i = 0; i < sampleTexts.size(); i++) {
 			if(sampleTexts.get(i).size() > len) {
@@ -48,13 +49,16 @@ public class ManyTimePadBreaker {
 	}
 	
 	/**
-	 * Reads a file containing all the sample cipher texts, one in each line,
-	 * all encrypted with the same key using stream cipher
+	 * Reads a file containing all the sample cipher texts and returns
+	 * a list containing all the sample cipher texts
 	 * @param filename
+	 *             the name of the file containing all the sample cipher
+	 *             texts, one in each line, all encrypted with the same
+	 *             key using stream cipher
 	 * @return
 	 * @throws IOException
 	 */
-	private ArrayList<Message> readFile(String filename) throws IOException {
+	private List<Message> readFile(String filename) throws IOException {
 		FileInputStream fstream = new FileInputStream(filename);
 		BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 		ArrayList<Message> sampleTexts = new ArrayList<Message>();
@@ -67,8 +71,8 @@ public class ManyTimePadBreaker {
 	}
 	
 	/**
-	 * Reads a string of hexadecimal numbers and returns the string encoded
-	 * by the numbers in ascii
+	 * Reads a string of hexadecimal numbers and returns a byte[]
+	 * containing the corresponding value
 	 * @param hex
 	 * @return
 	 */
