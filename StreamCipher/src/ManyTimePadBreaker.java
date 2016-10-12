@@ -8,7 +8,7 @@ import java.util.List;
 public class ManyTimePadBreaker {
 	
 	public String start(String filename, int target) {
-		List<Message> sampleTexts;
+		List<StreamCipher> sampleTexts;
 		try {
 			sampleTexts = readFile(filename);
 		} catch (IOException e) {
@@ -19,7 +19,7 @@ public class ManyTimePadBreaker {
 		return new String(sampleTexts.get(target).decrypt(key));
 	}
 	
-	private byte[] findKey(List<Message> sampleTexts) {
+	private byte[] findKey(List<StreamCipher> sampleTexts) {
 		int len = 0;
 		for(int i = 0; i < sampleTexts.size(); i++) {
 			if(sampleTexts.get(i).size() > len) {
@@ -29,10 +29,10 @@ public class ManyTimePadBreaker {
 		int[][] key = new int[len][256];
 		for(int i = 0; i < sampleTexts.size()-1; i++) {
 			for(int j = 0; j < sampleTexts.size(); j++) {
-				Message m1 = sampleTexts.get(i);
-				Message m2 = sampleTexts.get(j);
-				Message.guess(m1, m2, Message.xor(m1, m2), key, " the ");
-				Message.guess(m1, m2, Message.xor(m1, m2), key, " ");
+				StreamCipher m1 = sampleTexts.get(i);
+				StreamCipher m2 = sampleTexts.get(j);
+				StreamCipher.guessKey(m1, m2, StreamCipher.xor(m1, m2), key, " the ");
+				StreamCipher.guessKey(m1, m2, StreamCipher.xor(m1, m2), key, " ");
 			}
 		}
 		byte[] ret = new byte[len];
@@ -58,13 +58,13 @@ public class ManyTimePadBreaker {
 	 * @return
 	 * @throws IOException
 	 */
-	private List<Message> readFile(String filename) throws IOException {
+	private List<StreamCipher> readFile(String filename) throws IOException {
 		FileInputStream fstream = new FileInputStream(filename);
 		BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
-		ArrayList<Message> sampleTexts = new ArrayList<Message>();
+		ArrayList<StreamCipher> sampleTexts = new ArrayList<StreamCipher>();
 		String line;
 		while((line = br.readLine()) != null) {
-			sampleTexts.add(new Message(readHex(line)));
+			sampleTexts.add(new StreamCipher(readHex(line)));
 		}
 		br.close();
 		return sampleTexts;
