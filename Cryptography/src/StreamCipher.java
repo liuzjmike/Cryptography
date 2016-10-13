@@ -22,8 +22,8 @@ public class StreamCipher extends Cipher {
             }
             if(correct) {
                 for(int j = 0; j < phrase.length(); j++) {
-                    int possibleKey1 = (m1.cipherText[i+j] & MASK) ^ phrase.charAt(j);
-                    int possibleKey2 = (m2.cipherText[i+j] & MASK) ^ phrase.charAt(j);
+                    int possibleKey1 = (m1.cipherText[i+j] ^ phrase.charAt(j)) & MASK;
+                    int possibleKey2 = (m2.cipherText[i+j] ^ phrase.charAt(j)) & MASK;
                     key[i][possibleKey1]++;
                     key[i][possibleKey2]++;
                 }

@@ -8,6 +8,8 @@ public abstract class Cipher {
 		this.cipherText = cipherText;
 	}
 	
+	
+	
 	public int size() {
 		return cipherText.length;
 	}
@@ -34,4 +36,21 @@ public abstract class Cipher {
 		}
 		return ret;
 	}
+    
+    /**
+     * Reads a string of hexadecimal numbers and returns a byte[]
+     * containing the corresponding value
+     * @param hex
+     * @return
+     */
+    public static byte[] readHex(String hex) {
+        if(hex.length()%2 != 0) {
+            throw new IllegalArgumentException();
+        }
+        byte[] cypherText = new byte[hex.length()/2];
+        for(int i = 0; i < hex.length()-1; i += 2) {
+            cypherText[i/2] = (byte)Integer.parseInt(hex.substring(i,i+2), 16);
+        }
+        return cypherText;
+    }
 }

@@ -64,27 +64,10 @@ public class ManyTimePadBreaker {
 		ArrayList<StreamCipher> sampleTexts = new ArrayList<StreamCipher>();
 		String line;
 		while((line = br.readLine()) != null) {
-			sampleTexts.add(new StreamCipher(readHex(line)));
+			sampleTexts.add(new StreamCipher(Cipher.readHex(line)));
 		}
 		br.close();
 		return sampleTexts;
-	}
-	
-	/**
-	 * Reads a string of hexadecimal numbers and returns a byte[]
-	 * containing the corresponding value
-	 * @param hex
-	 * @return
-	 */
-	private byte[] readHex(String hex) {
-	    if(hex.length()%2 != 0) {
-	        throw new IllegalArgumentException();
-	    }
-	    byte[] cypherText = new byte[hex.length()/2];
-		for(int i = 0; i < hex.length()-1; i += 2) {
-			cypherText[i/2] = (byte)Integer.parseInt(hex.substring(i,i+2), 16);
-		}
-		return cypherText;
 	}
 
 	public static void main(String[] args) {
