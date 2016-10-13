@@ -8,7 +8,9 @@ public abstract class Cipher {
 		this.cipherText = cipherText;
 	}
 	
-	
+	protected Cipher(String cipherText) {
+	    this.cipherText = readHex(cipherText);
+	}
 	
 	public int size() {
 		return cipherText.length;

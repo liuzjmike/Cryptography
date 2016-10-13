@@ -4,15 +4,18 @@ import java.util.Random;
 
 public class CBC extends Cipher {
     
-    private static final int KEY_LENGTH = 16;
     private static final int BLOCK_SIZE = 16;
 
     public CBC(byte[] cipherText) {
         super(cipherText);
     }
     
+    public CBC(String cipherText) {
+        super(cipherText);
+    }
+    
     public static byte[] encrypt(byte[] key, String plainText) {
-        byte[] iv = new byte[KEY_LENGTH];
+        byte[] iv = new byte[BLOCK_SIZE];
         new Random().nextBytes(iv);
         byte[] plainTextInByte = plainText.getBytes();
         byte[] cipherText = new byte[(plainText.length()/BLOCK_SIZE + 2) * BLOCK_SIZE];
@@ -22,38 +25,38 @@ public class CBC extends Cipher {
             i++;
         }
         byte[] block = iv;
-        while(i < plainText.length() - BLOCK_SIZE) {
-            block = xor(block, Arrays.copyOfRange(plainTextInByte, i, i + BLOCK_SIZE));
+        while(i < cipherText.length - BLOCK_SIZE) {
+            block = xor(block, Arrays.copyOfRange(plainTextInByte, i - BLOCK_SIZE, i));
             try {
-                block = AES.encrypt(key, "AES", block);
+                block = AES.encrypt(key, block);
             } catch (GeneralSecurityException e) {
                 e.printStackTrace();
             }
             for(int j = 0; j < BLOCK_SIZE; j++) {
-                cipherText[i+j+BLOCK_SIZE] = block[j];
+                cipherText[i+j] = block[j];
             }
             i += BLOCK_SIZE;
         }
         byte[] lastBlock = new byte[BLOCK_SIZE];
         int j = 0;
         while(i < cipherText.length) {
-            if(i < plainTextInByte.length) {
-                lastBlock[j] = plainTextInByte[i];
+            if(i < plainTextInByte.length + BLOCK_SIZE) {
+                lastBlock[j] = plainTextInByte[i - BLOCK_SIZE];
             } else {
-                lastBlock[j] = (byte) (cipherText.length - plainTextInByte.length);
+                lastBlock[j] = (byte) (cipherText.length - plainTextInByte.length - BLOCK_SIZE);
             }
             i++;
             j++;
         }
-        i -= BLOCK_SIZE;
+        i -= j;
         lastBlock = xor(block, lastBlock);
         try {
-            lastBlock = AES.encrypt(key, "AES", plainTextInByte);
+            lastBlock = AES.encrypt(key, lastBlock);
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }
         for(j = 0; j < BLOCK_SIZE; j++) {
-            cipherText[i+j+BLOCK_SIZE] = lastBlock[j];
+            cipherText[i+j] = lastBlock[j];
         }
         return cipherText;
     }
@@ -66,7 +69,7 @@ public class CBC extends Cipher {
         for(int i = BLOCK_SIZE; i < cipherText.length; i += BLOCK_SIZE) {
             byte[] cipherBlock = Arrays.copyOfRange(cipherText, i, i + BLOCK_SIZE);
             try {
-                masked = AES.decrypt(key, "AES/ECB/NoPadding", cipherBlock);
+                masked = AES.decrypt(key, cipherBlock);
             } catch (GeneralSecurityException e) {
                 e.printStackTrace();
                 return "";
@@ -83,9 +86,11 @@ public class CBC extends Cipher {
     
     public static void main(String[] args) {
         byte[] key = Cipher.readHex("140b41b22a29beb4061bda66b6747e14");
-        String cipherText = "4ca00ff4c898d61e1edbf1800618fb2828a226d160dad07883d04e008a7897ee"
-                + "2e4b7465d5290d0c0e6c6822236e1daafb94ffe0c5da05d9476be028ad7c1d81";
-        CBC test = new CBC(Cipher.readHex(cipherText));
+        //String plainText = "Basic CBC mode encryption needs padding.";
+        String cipherText = "5b68629feb8606f9a6667670b75b38a5b4832d0f26e1ab7da33249de7d4afc48"
+                + "e713ac646ace36e872ad5fb8a512428a6e21364b0c374df45503473c5242a253";
+        //CBC test = new CBC(encrypt(key, plainText));
+        CBC test = new CBC(readHex(cipherText));
         System.out.println(test.decrypt(key));
     }
 }

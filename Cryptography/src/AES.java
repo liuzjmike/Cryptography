@@ -4,22 +4,25 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 public class AES {
-    public static byte[] encrypt(byte[] key, String transformation, byte[] plainText)
+    
+    public static final String TRANSFORMATION = "AES/ECB/NoPadding";
+    
+    public static byte[] encrypt(byte[] key, byte[] plainText)
             throws GeneralSecurityException {
-        Cipher cipher = initializeCipher(key, transformation, Cipher.ENCRYPT_MODE);
+        Cipher cipher = initializeCipher(key, Cipher.ENCRYPT_MODE);
         return cipher.doFinal(plainText);
     }
     
-    public static byte[] decrypt(byte[] key, String transformation, byte[] cipherText)
+    public static byte[] decrypt(byte[] key, byte[] cipherText)
             throws GeneralSecurityException {
-        Cipher cipher = initializeCipher(key, transformation, Cipher.DECRYPT_MODE);
+        Cipher cipher = initializeCipher(key, Cipher.DECRYPT_MODE);
         return cipher.doFinal(cipherText);
     }
     
-    private static Cipher initializeCipher(byte[] key, String transformation, int opmode)
+    private static Cipher initializeCipher(byte[] key, int opmode)
             throws GeneralSecurityException {
         SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
-        Cipher cipher = Cipher.getInstance(transformation);
+        Cipher cipher = Cipher.getInstance(TRANSFORMATION);
         cipher.init(opmode, keySpec);
         return cipher;
     }
