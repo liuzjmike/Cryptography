@@ -1,4 +1,5 @@
 import java.security.GeneralSecurityException;
+import java.util.Random;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -6,6 +7,12 @@ import javax.crypto.spec.SecretKeySpec;
 public class AES {
     
     public static final String TRANSFORMATION = "AES/ECB/NoPadding";
+    
+    public static byte[] generateIV(int blockSize) {
+        byte[] iv = new byte[blockSize];
+        new Random().nextBytes(iv);
+        return iv;
+    }
     
     public static byte[] encrypt(byte[] key, byte[] plainText)
             throws GeneralSecurityException {

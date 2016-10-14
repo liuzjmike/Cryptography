@@ -1,6 +1,5 @@
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-import java.util.Random;
 
 public class CBC extends Cipher {
     
@@ -15,8 +14,7 @@ public class CBC extends Cipher {
     }
     
     public static byte[] encrypt(byte[] key, String plainText) {
-        byte[] iv = new byte[BLOCK_SIZE];
-        new Random().nextBytes(iv);
+        byte[] iv = AES.generateIV(BLOCK_SIZE);
         byte[] plainTextInByte = plainText.getBytes();
         byte[] cipherText = new byte[(plainText.length()/BLOCK_SIZE + 2) * BLOCK_SIZE];
         int i = 0;
@@ -87,8 +85,8 @@ public class CBC extends Cipher {
     public static void main(String[] args) {
         byte[] key = Cipher.readHex("140b41b22a29beb4061bda66b6747e14");
         //String plainText = "Basic CBC mode encryption needs padding.";
-        String cipherText = "5b68629feb8606f9a6667670b75b38a5b4832d0f26e1ab7da33249de7d4afc48"
-                + "e713ac646ace36e872ad5fb8a512428a6e21364b0c374df45503473c5242a253";
+        String cipherText = "4ca00ff4c898d61e1edbf1800618fb2828a226d160dad0788"
+                + "3d04e008a7897ee2e4b7465d5290d0c0e6c6822236e1daafb94ffe0c5da05d9476be028ad7c1d81";
         //CBC test = new CBC(encrypt(key, plainText));
         CBC test = new CBC(readHex(cipherText));
         System.out.println(test.decrypt(key));
