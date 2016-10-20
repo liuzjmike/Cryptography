@@ -17,12 +17,7 @@ public abstract class Cipher {
 	}
 	
 	public String toString() {
-		StringBuffer hex = new StringBuffer();
-	    for (int i = 0; i < cipherText.length; i++)
-	    {
-	        hex.append(Integer.toHexString(cipherText[i]));
-	    }
-	    return hex.toString();
+	    return toHexString(cipherText);
 	}
 	
 	public abstract String decrypt(byte[] key);
@@ -37,6 +32,15 @@ public abstract class Cipher {
 			ret[i] = (byte) (s1[i] ^ s2[i]);
 		}
 		return ret;
+	}
+	
+	public static String toHexString(byte[] byteSequence) {
+	    StringBuffer hexString = new StringBuffer();
+        for (int i = 0; i < byteSequence.length; i++)
+        {
+            hexString.append(Integer.toHexString((byteSequence[i] & MASK) + 0x100).substring(1));
+        }
+        return hexString.toString();
 	}
     
     /**
