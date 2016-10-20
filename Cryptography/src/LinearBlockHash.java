@@ -7,7 +7,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-public class SHA256 {
+public class LinearBlockHash {
 
     private static final int OUTPUT_SIZE = 32;
     private static final int BLOCK_SIZE = 1024;

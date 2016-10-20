@@ -87,9 +87,9 @@ public class CBC extends Cipher {
         String plainText = "Basic CBC mode encryption needs padding.";
         String cipherText = "4ca00ff4c898d61e1edbf1800618fb2828a226d160dad0788"
                 + "3d04e008a7897ee2e4b7465d5290d0c0e6c6822236e1daafb94ffe0c5da05d9476be028ad7c1d81";
-        CBC test = new CBC(encrypt(key, plainText));
-        //CBC test = new CBC(readHex(cipherText));
-        System.out.println(test);
-        System.out.println(test.decrypt(key));
+        CBC test1 = new CBC(encrypt(key, plainText));
+        CBC test2 = new CBC(readHex(cipherText));
+        System.out.println(test1);
+        System.out.println(test2.decrypt(key));
     }
 }
