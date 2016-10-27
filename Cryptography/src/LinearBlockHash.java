@@ -38,34 +38,19 @@ public class LinearBlockHash {
 
     public static boolean verify(String pathname, String h0)
             throws IOException, NoSuchAlgorithmException {
-        File f = new File(pathname);
-        FileInputStream fis = new FileInputStream(f);
-        long numBlock = f.length() / (BLOCK_SIZE + OUTPUT_SIZE);
-        int lastBlock = (int) f.length() % (BLOCK_SIZE + OUTPUT_SIZE);
-        byte[] currentBlock = new byte[BLOCK_SIZE + OUTPUT_SIZE];
-        String hash = h0;
-        for(int i = 0; i < numBlock; i++) {
-            fis.read(currentBlock);
-            if(!hash.equals(Cipher.toHexString(getHash(currentBlock)))) {
-                fis.close();
-                return false;
-            }
-            hash = Cipher.toHexString(Arrays.copyOfRange(currentBlock, BLOCK_SIZE, BLOCK_SIZE + OUTPUT_SIZE));
-        }
-        currentBlock = new byte[lastBlock];
-        fis.read(currentBlock);
-        fis.close();
-        if(!hash.equals(Cipher.toHexString(getHash(currentBlock)))) {
-            return false;
-        }
-        return true;
+        return verify(pathname, "", h0, false);
     }
     
     public static boolean verifyAndRecover(String sourcePath, String targetPath, String h0)
             throws IOException, NoSuchAlgorithmException {
+        return verify(sourcePath, targetPath, h0, true);
+    }
+    
+    private static boolean verify(String sourcePath, String targetPath, String h0, boolean recover) 
+            throws IOException, NoSuchAlgorithmException {
+        FileOutputStream fos = recover ? new FileOutputStream(targetPath) : null;
         File f = new File(sourcePath);
         FileInputStream fis = new FileInputStream(f);
-        FileOutputStream fos = new FileOutputStream(targetPath);
         long numBlock = f.length() / (BLOCK_SIZE + OUTPUT_SIZE);
         int lastBlock = (int) f.length() % (BLOCK_SIZE + OUTPUT_SIZE);
         byte[] currentBlock = new byte[BLOCK_SIZE + OUTPUT_SIZE];
@@ -74,21 +59,29 @@ public class LinearBlockHash {
             fis.read(currentBlock);
             if(!hash.equals(Cipher.toHexString(getHash(currentBlock)))) {
                 fis.close();
-                fos.close();
+                if(fos != null) {
+                    fos.close();
+                }
                 return false;
             }
             hash = Cipher.toHexString(Arrays.copyOfRange(currentBlock, BLOCK_SIZE, BLOCK_SIZE + OUTPUT_SIZE));
-            fos.write(currentBlock, 0, BLOCK_SIZE);
+            if(fos != null) {
+                fos.write(currentBlock, 0, BLOCK_SIZE);
+            }
         }
         currentBlock = new byte[lastBlock];
         fis.read(currentBlock);
         fis.close();
         if(!hash.equals(Cipher.toHexString(getHash(currentBlock)))) {
-            fos.close();
+            if(fos != null) {
+                fos.close();
+            }
             return false;
         }
-        fos.write(currentBlock);
-        fos.close();
+        if(fos != null) {
+            fos.write(currentBlock);
+            fos.close();
+        }
         return true;
     }
     
