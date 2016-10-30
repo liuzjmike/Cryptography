@@ -26,7 +26,7 @@ public abstract class Cipher {
 		return xor(m1.cipherText, m2.cipherText);
 	}
 	
-	static public byte[] xor(byte[] s1, byte[] s2) {
+	public static byte[] xor(byte[] s1, byte[] s2) {
 		byte[] ret = new byte[Math.min(s1.length, s2.length)];
 		for(int i = 0; i < ret.length; i++) {
 			ret[i] = (byte) (s1[i] ^ s2[i]);
