@@ -30,8 +30,8 @@ public class CloseRSAPrimes {
     }
 
     /**
-     * Takes in four integers that comprise an equation such that
-     * |aq-bp| = (2^c)*(n^(1/4)) and returns the factorization of n
+     * Takes in four integers that comprise the inequality
+     * |aq-bp| < (2^c)*(n^(1/4)) and returns the factorization of n
      * @param n The RSA public modulus, the product of two primes p and q
      * @param a
      * @param b
