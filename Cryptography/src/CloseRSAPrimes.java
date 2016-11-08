@@ -42,16 +42,17 @@ public class CloseRSAPrimes {
         MathContext mc = new MathContext(n.precision());
         BigDecimal coeff = new BigDecimal(a*b);
         double dist = Math.pow(2, 2*c-3);
+        boolean toHalf = (a+b)%2 != 0;
+        BigDecimal mid = round(sqrt(n.multiply(coeff), mc), toHalf, RoundingMode.CEILING);
         for(int i = 0; i < dist; i++) {
             
             //mid = sqrt(abn) + i
             //x = sqrt(mid^2 - abn)
-            boolean toHalf = (a+b)%2 != 0;
-            BigDecimal mid = round(sqrt(n.multiply(coeff), mc).add(new BigDecimal(i)), toHalf, RoundingMode.CEILING);
-            BigDecimal x = round(sqrt(mid.pow(2).subtract(coeff.multiply(n)), mc), toHalf, RoundingMode.HALF_UP);
-            
-            BigDecimal low = mid.subtract(x);
-            BigDecimal high = mid.add(x);
+            BigDecimal guess = mid.add(new BigDecimal(i));
+            BigDecimal x = round(sqrt(guess.pow(2).subtract(coeff.multiply(n)), mc), toHalf, RoundingMode.HALF_UP);
+            System.out.println(i);
+            BigDecimal low = guess.subtract(x);
+            BigDecimal high = guess.add(x);
             if(low.multiply(high).compareTo(n.multiply(coeff)) == 0) {
                 if(a == 1 && b == 1) {
                     return Arrays.asList(low, high);
@@ -115,21 +116,22 @@ public class CloseRSAPrimes {
                 + "39967942889460764542040581564748988013734864120452325229320176487916666402"
                 + "99750918872997169052608322206777160001932926087000957999372407745896777369"
                 + "7817571267229951148662959627934791540");
+        /*
         List<BigDecimal> factors1 = factor(n1, 1, 1, 1);
         for(BigDecimal n: factors1) {
             System.out.println(n);
         }
         System.out.println(decrypt(cipher, factors1.get(0).toBigInteger(), factors1.get(1).toBigInteger(), new BigInteger("65537")));
-        /*
+        */
         List<BigDecimal> factors2 = factor(n2, 1, 1, 11);
         for(BigDecimal n: factors2) {
             System.out.println(n);
         }
-        */
+        /*
         List<BigDecimal> factors3 = factor(n3, 3, 2, 0);
         for(BigDecimal n: factors3) {
             System.out.println(n);
         }
-        
+        */
     }
 }
